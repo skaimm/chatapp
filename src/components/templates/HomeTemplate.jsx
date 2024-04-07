@@ -5,11 +5,16 @@ import Constants from "expo-constants";
 import PeopleList from '../organisms/PeopleList';
 
 const HomeTemplate = (props) => {
-    const { onStartChat, people } = props
+    const { people, value, onChangeText, onSearch, handleSearch, showHeader } = props
 
     return (
         <SafeAreaView style={styles.container}>
-            <HomeHeader title={"CHATAPP"} onStartChat={onStartChat} />
+            <HomeHeader title={"CHATAPP"}
+                showHeader={showHeader}
+                value={value}
+                onChangeText={onChangeText}
+                onSearch={onSearch}
+                handleSearch={handleSearch} />
             <PeopleList people={people} />
         </SafeAreaView>
     )

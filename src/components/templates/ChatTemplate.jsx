@@ -4,13 +4,14 @@ import MessageList from '../molecules/MessageList'
 import ChatHeader from '../organisms/ChatHeader'
 import TypingArea from '../molecules/TypingArea'
 import Constants from "expo-constants";
+import { convertUTCDateToLocalDate } from '../../utils/functions'
 
 const ChatTemplate = (props) => {
-    const { message, messages, setMessage, sendMessage, title, onBackPress } = props
+    const { message, messages, setMessage, sendMessage, receiver, onBackPress } = props
 
     return (
         <SafeAreaView style={styles.container}>
-            <ChatHeader title={title} onBackPress={onBackPress} />
+            <ChatHeader title={receiver?.displayName} uri={receiver?.pic} onBackPress={onBackPress} subtitle={`Last Seen at ${receiver?.lastSeen.toDate().toLocaleString()}`} />
             <MessageList messages={messages} />
             <TypingArea onSend={sendMessage} value={message} onChangeText={setMessage} />
         </SafeAreaView>

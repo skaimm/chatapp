@@ -2,13 +2,20 @@ import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import Header from '../atoms/Header';
 import ImageButton from '../atoms/ImageButton';
+import SearchBox from '../molecules/SearchBox';
 
 const HomeHeader = (props) => {
-    const { title, subtitle, onStartChat } = props;
+    const { title, subtitle, showHeader, value, onChangeText, onSearch, handleSearch } = props;
+
     return (
         <View style={styles.homeHeader}>
-            <Header title={title} subtitle={subtitle} />
-            <ImageButton uri="https://img.icons8.com/pastel-glyph/64/plus--v1.png" onPress={onStartChat} />
+            {showHeader ? <Header title={title} subtitle={subtitle} /> :
+                <SearchBox
+                    value={value}
+                    onChangeText={onChangeText}
+                    onSearch={onSearch}
+                />}
+            <ImageButton uri={`https://img.icons8.com/pastel-glyph/64/${showHeader ? "plus" : "minus"}--v1.png`} onPress={handleSearch} />
         </View>
     )
 }

@@ -1,16 +1,14 @@
 import { Animated, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 
 const TextBox = (props) => {
     const { useAnimation, errors, name } = props
-    const [active, setActive] = useState(false);
     const topAnim = useRef(new Animated.Value(13)).current;
     const fontAnim = useRef(new Animated.Value(14)).current;
     const isError = errors && name && errors[name];
 
     const activeHandler = (isActive) => {
         if (useAnimation) {
-            setActive(isActive);
             let fontValue = isActive ? 12 : 14;
             let topValue = isActive ? -8 : 13;
 

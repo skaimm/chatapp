@@ -6,12 +6,12 @@ const SplashScreen = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
-        // TODO: check the version and update the app as live
+        // you can check the version and update the app as live
         setTimeout(() => gotoLoginPage(), 1000)
     }, [])
 
     const gotoLoginPage = () => {
-        navigation.navigate('HomeScreen');
+        navigation.navigate('LoginScreen');
     }
 
     return (

@@ -5,11 +5,11 @@ import ImageButton from '../atoms/ImageButton';
 import Header from '../atoms/Header';
 
 const ChatHeader = (props) => {
-    const { title, subtitle, onBackPress } = props;
+    const { title, subtitle, uri, onBackPress } = props;
     return (
         <View style={styles.chatHeader}>
             <ImageButton uri="https://img.icons8.com/ios-filled/50/left.png" onPress={onBackPress} />
-            <Avatar uri="https://picsum.photos/200/300" />
+            <Avatar uri={uri} />
             <Header title={title} subtitle={subtitle} />
         </View>
     )

@@ -1,10 +1,14 @@
-import { SafeAreaView, StyleSheet, Text } from 'react-native'
-import React, { useState } from 'react'
-import TextBox from '../components/atoms/TextBox';
+import { StyleSheet } from 'react-native'
+import React, { useContext, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import LoginTemplate from '../components/templates/LoginTemplate';
+import { firestore } from '../../firebase';
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { getRandomDisplayName, showOKAlert, validateEmail } from '../utils/functions';
+import { ChatContext } from '../store/ChatContext';
 
 const LoginScreen = () => {
+    const { setCurrentUser } = useContext(ChatContext);
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -12,9 +16,49 @@ const LoginScreen = () => {
 
     const onLogin = () => {
         if (validate()) {
-            navigation.navigate('HomeScreen');
+            // no auth so when login, add user if not exist
+            checkUserExist()
         }
     };
+
+    const checkUserExist = () => {
+        getDoc(doc(firestore, "users", email))
+            .then((docSnap) => {
+                if (docSnap.exists()) {
+                    // User has data in at least one document then goto home page
+                    setCurrentUser(docSnap.data())
+                    navigation.navigate('HomeScreen');
+                } else {
+                    // docSnap.data() will be undefined in this case
+                    addUserToFirestore()
+                }
+            })
+            .catch((error) => {
+                showOKAlert("Error", error, () => { })
+            });
+
+    }
+
+    const addUserToFirestore = () => {
+        //new data
+        let docData = {
+            id: email,
+            displayName: getRandomDisplayName(),
+            createadAt: serverTimestamp(),
+            lastSeen: serverTimestamp(),
+            chatRooms: [],
+            pic: "https://picsum.photos/200/300" // random picture
+
+        }
+        //save data to firestore
+        setDoc(doc(firestore, `users/${email}`), docData).then(() => {
+            setCurrentUser(docData)
+            navigation.navigate('HomeScreen');
+        }).catch((error) => {
+            showOKAlert("Error", error, () => { })
+        });
+
+    }
 
     const validate = () => {
         let currentErrors = { ...errors };
@@ -36,11 +80,6 @@ const LoginScreen = () => {
         setErrors(currentErrors);
         return validate;
     };
-    const validateEmail = (email) => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
-    };
-
 
     return (
         <LoginTemplate
