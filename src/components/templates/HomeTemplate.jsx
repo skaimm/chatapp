@@ -2,18 +2,15 @@ import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import HomeHeader from '../organisms/HomeHeader'
 import Constants from "expo-constants";
-import PeopleList from '../molecules/PeopleList';
+import PeopleList from '../organisms/PeopleList';
 
-const HomeTemplate = () => {
-
-    const onStartChat = () => {
-        //start a chat
-    }
+const HomeTemplate = (props) => {
+    const { onStartChat, people } = props
 
     return (
         <SafeAreaView style={styles.container}>
             <HomeHeader title={"CHATAPP"} onStartChat={onStartChat} />
-            <PeopleList />
+            <PeopleList people={people} />
         </SafeAreaView>
     )
 }
