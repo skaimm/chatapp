@@ -12,4 +12,4 @@ This is a simple chat application built with React Native and Expo that allows u
 
 1. **Clone the Repository:**
    ```bash
-   git clone 
+   git clone https://github.com/skaimm/chatapp.git
