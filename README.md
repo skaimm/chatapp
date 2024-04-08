@@ -61,13 +61,10 @@ Firebase Setup:
    const firebaseConfig = {
      // Your Firebase project configuration (API key, etc.)
    };
-   
-   if (!firebase.apps.length) {
-     firebase.initializeApp(firebaseConfig);
-   }
-   
-   export const auth = firebase.auth();
-   export const firestore = firebase.firestore();
+
+   // Initialize Firebase
+   const app = initializeApp(firebaseConfig);
+   export const firestore = getFirestore(app);
 
 > **Note**
 >
