@@ -2,10 +2,10 @@ import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import HomeHeader from '../organisms/HomeHeader'
 import Constants from "expo-constants";
-import PeopleList from '../organisms/PeopleList';
+import ChatRoomList from '../organisms/ChatRoomList';
 
 const HomeTemplate = (props) => {
-    const { people, value, onChangeText, onSearch, handleSearch, showHeader } = props
+    const { chatRooms, value, onChangeText, onSearch, handleSearch, showHeader, onClickChatRoom } = props
 
     return (
         <SafeAreaView style={styles.container}>
@@ -15,7 +15,7 @@ const HomeTemplate = (props) => {
                 onChangeText={onChangeText}
                 onSearch={onSearch}
                 handleSearch={handleSearch} />
-            <PeopleList people={people} />
+            <ChatRoomList chatRooms={chatRooms} onClickChatRoom={onClickChatRoom} />
         </SafeAreaView>
     )
 }

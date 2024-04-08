@@ -1,7 +1,7 @@
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import HomeTemplate from '../components/templates/HomeTemplate'
-import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, onSnapshot, query, updateDoc, where } from 'firebase/firestore'
 import { firestore } from '../../firebase'
 import { ChatContext } from '../store/ChatContext'
 import { showOKAlert, validateEmail } from '../utils/functions'
@@ -11,7 +11,7 @@ const HomeScreen = () => {
     const [showHeader, setShowHeader] = useState(true)
     const navigation = useNavigation();
     const [searchValue, setSearchValue] = useState('');
-    const { currentUser } = useContext(ChatContext);
+    const { currentUser, chatRooms } = useContext(ChatContext);
 
     const handleSearch = () => {
         setShowHeader(!showHeader)
@@ -29,7 +29,12 @@ const HomeScreen = () => {
                 .then((docSnap) => {
                     if (docSnap.exists()) {
                         // User is exist, create a chat room
-                        openChatScreen(docSnap.data())
+                        let chatRoom = chatRooms.find(room => room?.to?.id === searchValue)
+                        if (chatRoom) {
+                            navigation.navigate('ChatScreen', { receiverId: searchValue, roomId: chatRoom.id, receiver: null });
+                        } else {
+                            createChatRoom(docSnap.data())
+                        }
                     } else {
                         // User is not exist
                         showOKAlert("Sorry", `There is no email address registered as ${searchValue}`, () => { })
@@ -43,7 +48,7 @@ const HomeScreen = () => {
         }
     }
 
-    const openChatScreen = (user) => {
+    const createChatRoom = (user) => {
         let docData = {
             id: "",
             people: [
@@ -51,6 +56,7 @@ const HomeScreen = () => {
                 currentUser?.id
             ]
         }
+
         addDoc(collection(firestore, "chats"), docData).then((res) => {
             updateDoc(doc(firestore, `chats/${res.id}`), { id: res.id })
             navigation.navigate('ChatScreen', { receiver: user, roomId: res.id });
@@ -59,20 +65,20 @@ const HomeScreen = () => {
         });
     }
 
+    const onClickChatRoom = (room) => {
+        navigation.navigate('ChatScreen', { receiver: room?.to, roomId: room?.id, isRead: !room?.lastMsgSeen && currentUser?.id !== room?.lastMsgFrom });
+    }
     return (
         <HomeTemplate
             showHeader={showHeader}
-            people={[]}
+            chatRooms={chatRooms}
             value={searchValue}
             onChangeText={setSearchValue}
             onSearch={onSearch}
             handleSearch={handleSearch}
+            onClickChatRoom={onClickChatRoom}
         />
     )
-}
-
-const createAChatRoom = () => {
-    setDoc()
 }
 
 export default HomeScreen

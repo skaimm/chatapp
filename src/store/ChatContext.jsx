@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { firestore } from '../../firebase';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 
 export const defaultChats = {
     currentUser: {},
@@ -16,14 +16,57 @@ export const ChatContextProvider = ({ children }) => {
     useEffect(
         () => {
             if (currentUser?.id) {
-                console.log("before update")
                 onSnapshot(doc(firestore, "users", currentUser?.id), (snapshot) => {
-                    console.log("updated", snapshot.data())
                     setCurrentUser(snapshot.data())
                 })
             }
         }, [currentUser?.id]
     )
+
+    const getUserData = async (userId) => {
+        const userRef = await getDoc(doc(firestore, "users", userId))
+        return userRef?.data();
+    }
+
+    const updateChatRoom = (chatRoomInfo) => {
+        let tempChatRoom = chatRooms
+        if (tempChatRoom.length < 1) {
+            tempChatRoom.push(chatRoomInfo)
+        }
+        else {
+            tempChatRoom = tempChatRoom?.filter(item => item.id !== chatRoomInfo.id)
+            tempChatRoom.push(chatRoomInfo)
+        }
+        setChatRooms(tempChatRoom)
+    }
+
+    useEffect(() => {
+        if (currentUser?.id) {
+            console.log("genel", currentUser?.id)
+            const q = query(collection(firestore, "chats"), where("people", "array-contains", currentUser?.id));
+            onSnapshot(q, (querySnapshot) => {
+                if (!querySnapshot.metadata.hasPendingWrites) {
+                    // create empty rooms
+                    const rooms = [];
+                    // iterate the documents
+                    querySnapshot.forEach(async (doc) => {
+                        const chatData = doc.data()
+                        let otherUserId = chatData?.people?.find(user => user !== currentUser?.id)
+                        // find room has users full data
+                        let otherUserData = await getUserData(otherUserId)
+                        updateChatRoom({
+                            id: chatData?.id,
+                            to: otherUserData,
+                            lastMsg: chatData?.lastMessage,
+                            lastMsgTime: chatData?.lastMessageTime,
+                            lastMsgFrom: chatData?.lastMessageFrom,
+                            lastMsgSeen: chatData?.lastMessageSeen
+                        })
+                    });
+                }
+            });
+        }
+    }, [currentUser?.id]);
 
     return (
         <ChatContext.Provider
@@ -31,7 +74,6 @@ export const ChatContextProvider = ({ children }) => {
                 currentUser,
                 setCurrentUser,
                 chatRooms,
-                setChatRooms
             }}>
             {children}
         </ChatContext.Provider>

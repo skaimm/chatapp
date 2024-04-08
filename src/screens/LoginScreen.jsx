@@ -46,7 +46,6 @@ const LoginScreen = () => {
             displayName: getRandomDisplayName(),
             createadAt: serverTimestamp(),
             lastSeen: serverTimestamp(),
-            chatRooms: [],
             pic: "https://picsum.photos/200/300" // random picture
 
         }
