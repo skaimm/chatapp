@@ -13,10 +13,17 @@ This is a simple chat application built with React Native and Expo that allows u
 1. **Clone the Repository:**
    ```bash
    git clone https://github.com/skaimm/chatapp.git
-
-1. **Install dependencies:**
-   ```bash
    cd chatapp
+   
+2. **Install dependencies:**
+   ```bash
    npm install
+
+3. **Start the Expo development server:**
+   ```bash
+   npx expo start
+OR testing with real device
+   ```bash 
+   npx expo start --tunnel
 
 
