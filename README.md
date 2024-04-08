@@ -22,8 +22,7 @@ This is a simple chat application built with React Native and Expo that allows u
 3. **Start the Expo development server:**
    ```bash
    npx expo start
-OR testing with real device
-   ```bash 
+   OR testing with real device
    npx expo start --tunnel
 
 
