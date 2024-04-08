@@ -80,3 +80,22 @@ Firebase Setup:
    - check documents for more -> https://firebase.google.com/docs/firestore
 **How to integrate Firebase Firestore:**
 
+## APP DETAIL
+- Its a single chat applcation
+- App has no registration and authentication steps
+
+#Splash Screen
+- Classic splash screen
+
+#Login Screen
+- To Login, use any email format and at least 1 length password
+- When you login, creating a user document in firestore and redirecting to home 
+
+#Home Screen
+- You can see the chat rooms in this screen
+- Already has plus icon to create a new chat room with someone
+- To create chat room, enter a email address whose logined before
+- When click any chat box, it will be redirect you to Chat screen 
+  
+#Chat Screen
+- You can send a message
