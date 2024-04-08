@@ -29,7 +29,7 @@ const HomeScreen = () => {
                 .then((docSnap) => {
                     if (docSnap.exists()) {
                         // User is exist, create a chat room
-                        createChatRoom(docSnap.data())
+                        openChatScreen(docSnap.data())
                     } else {
                         // User is not exist
                         showOKAlert("Sorry", `There is no email address registered as ${searchValue}`, () => { })
@@ -43,7 +43,7 @@ const HomeScreen = () => {
         }
     }
 
-    const createChatRoom = (user) => {
+    const openChatScreen = (user) => {
         let docData = {
             id: "",
             people: [
@@ -53,7 +53,7 @@ const HomeScreen = () => {
         }
         addDoc(collection(firestore, "chats"), docData).then((res) => {
             updateDoc(doc(firestore, `chats/${res.id}`), { id: res.id })
-            navigation.navigate('ChatScreen', { receiver: user });
+            navigation.navigate('ChatScreen', { receiver: user, roomId: res.id });
         }).catch((error) => {
             showOKAlert("Error", error, () => { })
         });

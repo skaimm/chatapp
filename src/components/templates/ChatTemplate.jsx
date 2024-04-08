@@ -12,7 +12,7 @@ const ChatTemplate = (props) => {
     return (
         <SafeAreaView style={styles.container}>
             <ChatHeader title={receiver?.displayName} uri={receiver?.pic} onBackPress={onBackPress} subtitle={`Last Seen at ${receiver?.lastSeen.toDate().toLocaleString()}`} />
-            <MessageList messages={messages} />
+            <MessageList data={messages} />
             <TypingArea onSend={sendMessage} value={message} onChangeText={setMessage} />
         </SafeAreaView>
     )

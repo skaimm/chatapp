@@ -9,6 +9,7 @@ const LoginForm = (props) => {
     return (
         <>
             <TextBox
+                style={styles.textbox}
                 value={email}
                 onChangeText={setEmail}
                 label="E-Mail"
@@ -18,6 +19,7 @@ const LoginForm = (props) => {
                 useAnimation={true}
             />
             <TextBox
+                style={styles.textbox}
                 value={password}
                 onChangeText={setPassword}
                 label="Password"
@@ -40,4 +42,8 @@ const LoginForm = (props) => {
 
 export default LoginForm
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    textbox: {
+        marginVertical: 14,
+    }
+})

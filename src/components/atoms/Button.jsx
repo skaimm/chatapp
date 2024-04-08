@@ -9,14 +9,14 @@ const Button = (props) => {
             <Text style={[styles.labelStyle(props), { ...labelStyles }]}>{label}</Text>
         </TouchableOpacity>
     )
-} 
+}
 
 export default Button;
 
 const styles = StyleSheet.create({
-    buttonStyle: ({ rounded, color, size, width }) => ({
-        backgroundColor: color || '#FFF',
-        borderRadius: rounded ? 50 : 6,
+    buttonStyle: ({ rounded, color, size, width, disabled }) => ({
+        backgroundColor: disabled ? "#aaa" : (color || '#FFF'),
+        borderRadius: rounded ? 50 : 0,
         padding: size == 'lg' ? 16 : size == 'md' ? 12 : 8,
         display: 'flex',
         alignItems: 'center',

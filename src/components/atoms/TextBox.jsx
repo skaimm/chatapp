@@ -27,7 +27,7 @@ const TextBox = (props) => {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container(isError ? isError : false)}>
             <View>
                 <TextInput
                     {...props}
@@ -68,16 +68,17 @@ const TextBox = (props) => {
 export default TextBox
 
 const styles = StyleSheet.create({
-    container: {
-        width: "80%"
-    },
+    container: ({ isError }) => ({
+        width: "80%",
+        marginVertical: isError ? 0 : 5,
+    }),
     input: {
         padding: 16,
-        height: 46,
+        height: 50,
         borderRadius: 6,
         flexDirection: 'row',
         alignItems: 'center',
-        fontSize: 12,
+        fontSize: 14,
         elevation: 1,
         backgroundColor: '#FFF',
         borderWidth: 0.3,
@@ -89,7 +90,6 @@ const styles = StyleSheet.create({
     },
     errorText: {
         marginBottom: 12,
-        marginTop: -10,
         marginLeft: 16,
         fontSize: 12,
         color: '#e94335',

@@ -19,7 +19,7 @@ const TypingArea = (props) => {
                 width="20%"
                 size="md"
                 onPress={onSend}
-                disabled={!value}
+                disabled={!(value && value !== "")}
             />
         </View>
     )

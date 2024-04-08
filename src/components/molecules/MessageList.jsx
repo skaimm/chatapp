@@ -2,11 +2,11 @@ import React from 'react';
 import { FlatList } from 'react-native';
 import Message from '../atoms/Message';
 
-const MessageList = ({ messages }) => (
+const MessageList = ({ data }) => (
     <FlatList
-        data={messages}
-        renderItem={({ item }) => <Message message={item} />}
-        keyExtractor={item => item.id}
+        data={data}
+        renderItem={({ item }) => <Message item={item} />}
+        keyExtractor={item => item?.id}
         inverted // Display newest messages at the top
     />
 );
