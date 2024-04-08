@@ -21,7 +21,7 @@ const ChatScreen = (props) => {
             })
         }
         if (props.route.params.receiver) {
-            console.log(props.route.params.roomId,props.route.params.receiver)
+            console.log(props.route.params.roomId, props.route.params.receiver)
             setChatInfo({
                 chatRoomId: props.route.params.roomId,
                 receiver: props.route.params.receiver
@@ -49,7 +49,7 @@ const ChatScreen = (props) => {
     useEffect(
         () => {
             if (chatInfo?.chatRoomId) {
-                onSnapshot(query(collection(firestore, `chats/${chatInfo.chatRoomId}/messages`),orderBy("at", "desc"), limit(25)), (querySnapshot) => {
+                onSnapshot(query(collection(firestore, `chats/${chatInfo.chatRoomId}/messages`), orderBy("at", "desc"), limit(25)), (querySnapshot) => {
                     let data = querySnapshot.docs.map((doc) => doc.data())
                     setMessages(data)
                 })
@@ -59,6 +59,16 @@ const ChatScreen = (props) => {
 
     const sendMessage = () => {
         // Implement logic to send message to server and update messages state
+        if (message && message !== "") {
+            if (!chatInfo?.chatRoomId) {
+                createARoom()
+                return
+            }
+            saveMessage()
+        }
+    };
+    const saveMessage = (roomId) => {
+        let fChatRoomId = roomId ? roomId : chatInfo.chatRoomId
         const now = serverTimestamp()
         let docData = {
             id: "",
@@ -68,24 +78,44 @@ const ChatScreen = (props) => {
             type: "text",
             at: now
         }
-        if (message && message !== "") {
-            let temp = message
-            setMessage("")
-            addDoc(collection(firestore, `chats/${chatInfo.chatRoomId}/messages`), docData).then((res) => {
-                updateDoc(doc(firestore, `chats/${chatInfo.chatRoomId}/messages/${res.id}`), { id: res.id })
-                updateDoc(doc(firestore, `chats/${chatInfo.chatRoomId}`), {
-                    lastMessage: message,
-                    lastMessageTime: now,
-                    lastMessageFrom: currentUser?.id,
-                    lastMessageSeen: false,
-                })
-            }).catch((error) => {
-                setMessage(temp)
-                showOKAlert("Error", error, () => { })
-            });
-        }
-    };
+        let temp = message
+        setMessage("")
+        addDoc(collection(firestore, `chats/${fChatRoomId}/messages`), docData).then((res) => {
+            updateDoc(doc(firestore, `chats/${fChatRoomId}/messages/${res.id}`), { id: res.id })
+            updateDoc(doc(firestore, `chats/${fChatRoomId}`), {
+                lastMessage: message,
+                lastMessageTime: now,
+                lastMessageFrom: currentUser?.id,
+                lastMessageSeen: false,
+            })
+        }).catch((error) => {
+            setMessage(temp)
+            showOKAlert("Error", error, () => { })
+        });
+    }
 
+    const createARoom = async () => {
+        let docData = {
+            id: "",
+            people: [
+                chatInfo.receiver?.id,
+                currentUser?.id
+            ]
+        }
+
+        addDoc(collection(firestore, "chats"), docData).then((res) => {
+            updateDoc(doc(firestore, `chats/${res.id}`), { id: res.id })
+            setChatInfo((prev) => (
+                {
+                    ...prev,
+                    chatRoomId: res.id,
+                }
+            ))
+            saveMessage(res.id)
+        }).catch((error) => {
+            showOKAlert("Error", error, () => { })
+        });
+    }
     const onBackPress = () => {
         navigation.goBack()
     }

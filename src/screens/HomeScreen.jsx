@@ -33,7 +33,7 @@ const HomeScreen = () => {
                         if (chatRoom) {
                             navigation.navigate('ChatScreen', { receiverId: searchValue, roomId: chatRoom.id, receiver: null });
                         } else {
-                            createChatRoom(docSnap.data())
+                            openChatRoom(docSnap.data())
                         }
                     } else {
                         // User is not exist
@@ -48,21 +48,8 @@ const HomeScreen = () => {
         }
     }
 
-    const createChatRoom = (user) => {
-        let docData = {
-            id: "",
-            people: [
-                user?.id,
-                currentUser?.id
-            ]
-        }
-
-        addDoc(collection(firestore, "chats"), docData).then((res) => {
-            updateDoc(doc(firestore, `chats/${res.id}`), { id: res.id })
-            navigation.navigate('ChatScreen', { receiver: user, roomId: res.id });
-        }).catch((error) => {
-            showOKAlert("Error", error, () => { })
-        });
+    const openChatRoom = (user) => {
+        navigation.navigate('ChatScreen', { receiver: user, roomId: null });
     }
 
     const onClickChatRoom = (room) => {

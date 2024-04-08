@@ -30,14 +30,11 @@ export const ChatContextProvider = ({ children }) => {
 
     const updateChatRoom = (chatRoomInfo) => {
         let tempChatRoom = chatRooms
-        if (tempChatRoom.length < 1) {
+        tempChatRoom = tempChatRoom?.filter(item => item.id !== chatRoomInfo.id || item.to.id !== currentUser?.id)
+        if (chatRoomInfo.to.id !== currentUser?.id) {
             tempChatRoom.push(chatRoomInfo)
+            setChatRooms(tempChatRoom)
         }
-        else {
-            tempChatRoom = tempChatRoom?.filter(item => item.id !== chatRoomInfo.id)
-            tempChatRoom.push(chatRoomInfo)
-        }
-        setChatRooms(tempChatRoom)
     }
 
     useEffect(() => {
@@ -45,12 +42,11 @@ export const ChatContextProvider = ({ children }) => {
             console.log("genel", currentUser?.id)
             const q = query(collection(firestore, "chats"), where("people", "array-contains", currentUser?.id));
             onSnapshot(q, (querySnapshot) => {
-                if (!querySnapshot.metadata.hasPendingWrites) {
-                    // create empty rooms
-                    const rooms = [];
-                    // iterate the documents
-                    querySnapshot.forEach(async (doc) => {
-                        const chatData = doc.data()
+                var counter = 0
+                querySnapshot.forEach(async (doc) => {
+                    const chatData = doc.data()
+                    if (chatData.people.includes(currentUser?.id)) {
+                        counter++
                         let otherUserId = chatData?.people?.find(user => user !== currentUser?.id)
                         // find room has users full data
                         let otherUserData = await getUserData(otherUserId)
@@ -62,8 +58,9 @@ export const ChatContextProvider = ({ children }) => {
                             lastMsgFrom: chatData?.lastMessageFrom,
                             lastMsgSeen: chatData?.lastMessageSeen
                         })
-                    });
-                }
+                    }
+                });
+                if (counter === 0) setChatRooms([])
             });
         }
     }, [currentUser?.id]);
